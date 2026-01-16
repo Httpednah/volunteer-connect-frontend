@@ -1,3 +1,4 @@
+// src/App.jsx
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -7,10 +8,10 @@ import Organization from "./pages/Organization";
 import VolunteerDashboard from "./pages/VolunteerDashboard";
 import Nav from "./components/Nav";
 
-
 export default function App() {
   return (
     <BrowserRouter>
+      <Nav />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
