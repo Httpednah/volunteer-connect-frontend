@@ -5,6 +5,7 @@ import Register from "./pages/Register";
 import Opportunities from "./pages/Opportunities";
 import Organization from "./pages/Organization";
 import VolunteerDashboard from "./pages/VolunteerDashboard";
+import Nav from "./components/Nav";
 
 export default function App() {
   return (
