@@ -1,3 +1,6 @@
+/**
+ * Reusable multi-line text input (Textarea).
+ */
 import * as React from "react"
 import { cn } from "@/lib/utils"
 
