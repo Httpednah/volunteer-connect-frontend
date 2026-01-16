@@ -27,35 +27,6 @@ This project is designed for a group-based full-stack assessment and follows bes
 
 ---
 
-## Project Structure
-
-```
-volunteer-connect-frontend/
-├── index.html
-├── package.json
-├── vite.config.js
-├── src/
-│   ├── main.jsx
-│   ├── App.jsx
-│   ├── api.js
-│   ├── index.css
-│   ├── components/
-│   │   ├── Navbar.jsx
-│   │   └── ProtectedRoute.jsx
-│   ├── pages/
-│   │   ├── Login.jsx
-│   │   ├── Register.jsx
-│   │   ├── Home.jsx
-│   │   ├── Opportunities.jsx
-│   │   ├── OrganizationDashboard.jsx
-│   │   └── Apply.jsx
-│   └── utils/
-│       └── auth.js
-└── README.md
-```
-
----
-
 ## Application Pages
 
 ### 1. Login Page
