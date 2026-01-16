@@ -1,3 +1,7 @@
+/**
+ * Login Page: Allows existing users to sign in.
+ * Demonstrates: State handling, Form submission, and API integration.
+ */
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { loginUser } from "../services/api";
@@ -8,27 +12,30 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 
 export default function Login() {
   const navigate = useNavigate();
+  // State to store users input
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  // State for error messages
   const [error, setError] = useState("");
 
+  // Updates the formData state whenever a user types
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevents the browser from reloading the page
     setError("");
     try {
       const res = await loginUser(formData);
       if (res.error) {
         setError(res.error);
       } else {
-        // Store user in localStorage (as per plan)
+        // SUCCESS: Store user data in localStorage so other pages can see who is logged in
         localStorage.setItem("user", JSON.stringify(res));
-        navigate("/");
+        navigate("/"); // Redirect to home page
       }
     } catch (err) {
       setError("Login failed. Please check your credentials.");
@@ -36,8 +43,8 @@ export default function Login() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-slate-50">
-      <Card className="w-[400px]">
+    <div className="flex items-center justify-center min-h-screen bg-slate-50 dark:bg-slate-900 px-4">
+      <Card className="w-full max-w-[400px]">
         <CardHeader>
           <CardTitle>Welcome back</CardTitle>
           <CardDescription>Enter your email to sign in to your account.</CardDescription>
