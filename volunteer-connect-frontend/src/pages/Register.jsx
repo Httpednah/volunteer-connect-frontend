@@ -1,126 +1,130 @@
-/**
- * Register Page: Allows new users to create an account.
- * Demonstrates: Toggle buttons for Roles (Volunteer/Organization) and multi-field form state.
- */
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { registerUser } from "../services/api";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
+/**
+ * Register Page: Allows new users to create an account.
+ * Demonstrates: Role selection and multi-field form state.
+ */
 export default function Register() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
+  const [form, setForm] = useState({
     name: "",
     email: "",
     password: "",
-    role: "volunteer", // Default role
+    role: "volunteer",
   });
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // Function to switch between Volunteer and Organization role
   const handleRoleChange = (role) => {
-    setFormData({ ...formData, role: role });
+    setForm({ ...form, role });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     try {
-      const res = await registerUser(formData);
+      const res = await registerUser(form);
       if (res.error) {
         setError(res.error);
       } else {
-        // Success: Go to login page so user can sign in
+        // Success: navigate to login
         navigate("/login");
       }
-    } catch (err) {
+    } catch {
       setError("Registration failed. Please try again.");
     }
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-slate-50 dark:bg-slate-900 px-4">
-      <Card className="w-full max-w-[400px]">
-        <CardHeader>
-          <CardTitle>Create an account</CardTitle>
-          <CardDescription>Enter your details to register.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit}>
-            <div className="grid w-full items-center gap-4">
-              <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="name">Name</Label>
-                <Input
-                  id="name"
-                  name="name"
-                  placeholder="John Doe"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="flex flex-col space-y-1.5">
-                <Label>I want to join as a:</Label>
-                <div className="flex gap-4">
-                    <Button
-                        type="button"
-                        variant={formData.role === 'volunteer' ? 'default' : 'outline'}
-                        onClick={() => handleRoleChange('volunteer')}
-                        className="w-full"
-                    >
-                        Volunteer
-                    </Button>
-                    <Button
-                        type="button"
-                        variant={formData.role === 'organization' ? 'default' : 'outline'}
-                        onClick={() => handleRoleChange('organization')}
-                        className="w-full"
-                    >
-                        Organization
-                    </Button>
-                </div>
-              </div>
-              {error && <p className="text-sm text-red-500">{error}</p>}
-            </div>
-            <Button className="w-full mt-4" type="submit">Register</Button>
-          </form>
-        </CardContent>
-        <CardFooter className="flex justify-center">
-          <p className="text-sm text-muted-foreground">
-            Already have an account? <Link to="/login" className="text-primary hover:underline">Login</Link>
-          </p>
-        </CardFooter>
-      </Card>
+      <div className="w-full max-w-md bg-white dark:bg-slate-800 p-8 rounded-xl shadow-md border border-slate-200 dark:border-slate-700">
+        <h2 className="text-2xl font-bold mb-4 dark:text-white">Create an account</h2>
+        <p className="mb-6 text-slate-600 dark:text-slate-300">
+          Enter your details to register.
+        </p>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <input
+              name="name"
+              placeholder="Name"
+              value={form.name}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded dark:bg-slate-700 dark:text-white"
+              required
+            />
+          </div>
+          <div>
+            <input
+              name="email"
+              type="email"
+              placeholder="Email"
+              value={form.email}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded dark:bg-slate-700 dark:text-white"
+              required
+            />
+          </div>
+          <div>
+            <input
+              name="password"
+              type="password"
+              placeholder="Password"
+              value={form.password}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded dark:bg-slate-700 dark:text-white"
+              required
+            />
+          </div>
+
+          {/* Role selection */}
+          <div className="flex gap-4">
+            <button
+              type="button"
+              onClick={() => handleRoleChange("volunteer")}
+              className={`w-full px-4 py-2 rounded ${
+                form.role === "volunteer"
+                  ? "bg-blue-500 text-white"
+                  : "border bg-white dark:bg-slate-700 dark:text-white"
+              }`}
+            >
+              Volunteer
+            </button>
+            <button
+              type="button"
+              onClick={() => handleRoleChange("organization")}
+              className={`w-full px-4 py-2 rounded ${
+                form.role === "organization"
+                  ? "bg-blue-500 text-white"
+                  : "border bg-white dark:bg-slate-700 dark:text-white"
+              }`}
+            >
+              Organization
+            </button>
+          </div>
+
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          >
+            Register
+          </button>
+        </form>
+
+        <p className="text-sm text-slate-600 dark:text-slate-300 mt-4 text-center">
+          Already have an account?{" "}
+          <Link to="/login" className="text-blue-500 hover:underline">
+            Login
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }
