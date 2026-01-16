@@ -1,3 +1,7 @@
+/**
+ * Register Page: Allows new users to create an account.
+ * Demonstrates: Toggle buttons for Roles (Volunteer/Organization) and multi-field form state.
+ */
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { registerUser } from "../services/api";
@@ -12,7 +16,7 @@ export default function Register() {
     name: "",
     email: "",
     password: "",
-    role: "volunteer",
+    role: "volunteer", // Default role
   });
   const [error, setError] = useState("");
 
@@ -20,6 +24,7 @@ export default function Register() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Function to switch between Volunteer and Organization role
   const handleRoleChange = (role) => {
     setFormData({ ...formData, role: role });
   };
@@ -32,7 +37,7 @@ export default function Register() {
       if (res.error) {
         setError(res.error);
       } else {
-        // Assume success 201
+        // Success: Go to login page so user can sign in
         navigate("/login");
       }
     } catch (err) {
@@ -41,8 +46,8 @@ export default function Register() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-slate-50">
-      <Card className="w-[400px]">
+    <div className="flex items-center justify-center min-h-screen bg-slate-50 dark:bg-slate-900 px-4">
+      <Card className="w-full max-w-[400px]">
         <CardHeader>
           <CardTitle>Create an account</CardTitle>
           <CardDescription>Enter your details to register.</CardDescription>
@@ -85,7 +90,7 @@ export default function Register() {
                 />
               </div>
               <div className="flex flex-col space-y-1.5">
-                <Label>Role</Label>
+                <Label>I want to join as a:</Label>
                 <div className="flex gap-4">
                     <Button
                         type="button"
