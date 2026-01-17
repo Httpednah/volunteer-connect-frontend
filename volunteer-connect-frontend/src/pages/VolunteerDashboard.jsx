@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getOpportunities } from "../api"; // make sure path is correct
+import { getOpportunities } from "../services/api";
+
 
 export default function VolunteerDashboard() {
   const [opportunities, setOpportunities] = useState([]);
