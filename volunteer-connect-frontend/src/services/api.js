@@ -1,51 +1,51 @@
-const BASE_URL = "http://127.0.0.1:5000";
+// src/services/api.js
+const BASE_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:5000";
 
-// ---------- AUTH ----------
-export async function registerUser(data) {
-  const res = await fetch(`${BASE_URL}/register`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+async function request(path, options = {}) {
+  const res = await fetch(`${BASE_URL}${path}`, {
+    headers: { "Content-Type": "application/json", ...(options.headers || {}) },
+    ...options,
   });
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.error || "Failed to register");
+
+  // Try to parse JSON safely
+  let data = null;
+  try {
+    data = await res.json();
+  } catch {
+    // ignore if response isn't JSON
   }
-  return res.json();
+
+  if (!res.ok) {
+    const message = data?.error || data?.message || "Request failed";
+    throw new Error(message);
+  }
+
+  return data;
 }
 
-export async function loginUser(data) {
-  const res = await fetch(`${BASE_URL}/login`, {
+// ---------- AUTH ----------
+export function registerUser(payload) {
+  return request("/register", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
   });
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.error || "Failed to login");
-  }
-  return res.json();
+}
+
+export function loginUser(payload) {
+  return request("/login", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
 }
 
 // ---------- OPPORTUNITIES ----------
-export async function getOpportunities() {
-  const res = await fetch(`${BASE_URL}/opportunities`);
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.error || "Failed to fetch opportunities");
-  }
-  return res.json();
+export function getOpportunities() {
+  return request("/opportunities");
 }
 
-export async function createOpportunity(data) {
-  const res = await fetch(`${BASE_URL}/opportunities`, {
+export function createOpportunity(payload) {
+  return request("/opportunities", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
   });
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.error || "Failed to create opportunity");
-  }
-  return res.json();
 }
