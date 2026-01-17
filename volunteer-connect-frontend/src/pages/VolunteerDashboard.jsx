@@ -2,17 +2,24 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getOpportunities } from "../services/api";
 
-
 export default function VolunteerDashboard() {
   const [opportunities, setOpportunities] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     async function fetchOpportunities() {
-      const data = await getOpportunities();
-      setOpportunities(data);
-      setLoading(false);
+      try {
+        const data = await getOpportunities();
+        setOpportunities(data);
+      } catch (err) {
+        console.error("Failed to fetch opportunities:", err);
+        setError("Could not load opportunities. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
     }
+
     fetchOpportunities();
   }, []);
 
@@ -40,6 +47,8 @@ export default function VolunteerDashboard() {
 
           {loading ? (
             <p className="text-slate-600 dark:text-slate-400">Loading opportunities...</p>
+          ) : error ? (
+            <p className="text-red-500">{error}</p>
           ) : opportunities.length === 0 ? (
             <p className="text-slate-600 dark:text-slate-400">No opportunities available yet.</p>
           ) : (
