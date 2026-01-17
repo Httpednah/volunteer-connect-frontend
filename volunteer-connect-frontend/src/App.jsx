@@ -1,4 +1,5 @@
 // src/App.jsx
+import PaymentDashboard from "./pages/PaymentDashboard";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -34,6 +35,9 @@ export default function App() {
         {/* Volunteer Dashboard */}
         <Route path="/dashboard" element={<VolunteerDashboard />} />
 
+        {/* Payments */}
+        <Route path="/payments" element={<PaymentDashboard />} />
+
         {/* Optional: Add a 404 fallback route */}
         <Route
           path="*"
@@ -47,3 +51,4 @@ export default function App() {
     </BrowserRouter>
   );
 }
+
