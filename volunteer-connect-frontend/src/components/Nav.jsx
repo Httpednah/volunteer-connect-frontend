@@ -1,5 +1,5 @@
 // src/components/Nav.jsx
-import { Link, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 
 // Simulated user state for demonstration
 // In a real app, you'd get this from auth context or API
@@ -11,35 +11,89 @@ const user = {
 export default function Nav() {
   const location = useLocation();
 
-  const linkStyle = (path) => ({
-    marginRight: "1rem",
-    textDecoration: location.pathname === path ? "underline" : "none",
-  });
+  // Optional: show a small page label (feels "app-like")
+  const pageLabelMap = {
+    "/": "Home",
+    "/login": "Login",
+    "/register": "Create account",
+    "/opportunities": "Opportunities",
+    "/organization": "Organization",
+    "/dashboard": "Dashboard",
+  };
+
+  const pageLabel = pageLabelMap[location.pathname] || "Volunteer Connect";
 
   return (
-    <nav style={{ padding: "1rem", borderBottom: "1px solid #ccc", marginBottom: "2rem" }}>
-      <Link to="/" style={linkStyle("/")}>Home</Link>
+    <header className="nav-wrap">
+      <div className="container nav">
+        <div className="nav-left">
+          <Link to="/" className="brand">
+            <span className="brand-dot" />
+            Volunteer<span className="brand-accent">Connect</span>
+          </Link>
 
-      {user.isLoggedIn && user.role === "volunteer" && (
-        <>
-          <Link to="/opportunities" style={linkStyle("/opportunities")}>Opportunities</Link>
-          <Link to="/dashboard" style={linkStyle("/dashboard")}>Dashboard</Link>
-        </>
-      )}
+          <span className="nav-divider" />
 
-      {user.isLoggedIn && user.role === "organization" && (
-        <>
-          <Link to="/organization" style={linkStyle("/organization")}>Organization</Link>
-          <Link to="/dashboard" style={linkStyle("/dashboard")}>Dashboard</Link>
-        </>
-      )}
+          <span className="nav-label">{pageLabel}</span>
+        </div>
 
-      {!user.isLoggedIn && (
-        <>
-          <Link to="/login" style={linkStyle("/login")}>Login</Link>
-          <Link to="/register" style={linkStyle("/register")}>Register</Link>
-        </>
-      )}
-    </nav>
+        <nav className="nav-links">
+          <NavLink to="/" className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}>
+            Home
+          </NavLink>
+
+          {user.isLoggedIn && user.role === "volunteer" && (
+            <>
+              <NavLink
+                to="/opportunities"
+                className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
+              >
+                Opportunities
+              </NavLink>
+
+              <NavLink
+                to="/dashboard"
+                className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
+              >
+                Dashboard
+              </NavLink>
+            </>
+          )}
+
+          {user.isLoggedIn && user.role === "organization" && (
+            <>
+              <NavLink
+                to="/organization"
+                className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
+              >
+                Organization
+              </NavLink>
+
+              <NavLink
+                to="/dashboard"
+                className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
+              >
+                Dashboard
+              </NavLink>
+            </>
+          )}
+
+          {!user.isLoggedIn && (
+            <div className="nav-cta">
+              <NavLink
+                to="/login"
+                className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
+              >
+                Login
+              </NavLink>
+
+              <NavLink to="/register" className="btn btn-primary">
+                Register
+              </NavLink>
+            </div>
+          )}
+        </nav>
+      </div>
+    </header>
   );
 }
