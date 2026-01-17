@@ -192,3 +192,57 @@
   border-color: rgba(143,185,150,.4);
   color: var(--text);
 }
+/* =========================
+   Auth Pages
+========================= */
+.auth-wrap{
+  min-height: calc(100vh - 84px);
+  display: grid;
+  place-items: center;
+  padding: 24px 0 60px;
+}
+
+.auth-card{
+  width: min(460px, 100%);
+  padding: 22px;
+  animation: fadeUp .55s var(--ease) both;
+}
+
+.auth-head{
+  display: grid;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.btn-full{
+  width: 100%;
+  justify-content: center;
+}
+
+/* Links */
+.link{
+  color: var(--primary);
+  font-weight: 600;
+}
+.link:hover{ color: var(--primary-2); }
+
+.auth-foot{
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Alerts */
+.alert{
+  padding: 12px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.02);
+  margin: 10px 0 14px;
+}
+
+.alert-danger{
+  border-color: rgba(224,108,117,.4);
+  background: rgba(224,108,117,.12);
+}
