@@ -1,146 +1,138 @@
-// src/pages/CreateOpportunity.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
-// Replace this with your actual backend URL
-const API_URL = "http://localhost:5555/articles";
+const API_URL = "http://localhost:5555/opportunities"; // Update this to your Flask route
 
 export default function CreateOpportunity() {
   const navigate = useNavigate();
 
-  const initialValues = {
-    title: "",
-    author: "",
-    content: "",
-    preview: "",
-    minutes_to_read: "",
-  };
-
+  // Validation schema using Yup
   const validationSchema = Yup.object({
-    title: Yup.string().required("Title is required"),
-    author: Yup.string().required("Author is required"),
-    content: Yup.string().required("Content is required"),
-    preview: Yup.string()
-      .max(50, "Preview must be 50 characters or less")
-      .required("Preview is required"),
-    minutes_to_read: Yup.number()
-      .typeError("Must be a number")
-      .positive("Must be positive")
-      .integer("Must be an integer")
-      .required("Minutes to read is required"),
+    title: Yup.string()
+      .min(5, "Title must be at least 5 characters")
+      .required("Title is required"),
+    description: Yup.string()
+      .min(20, "Description must be at least 20 characters")
+      .required("Description is required"),
+    organization: Yup.string().required("Organization is required"),
+    location: Yup.string().required("Location is required"),
   });
 
-  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+  // Handle form submission
+  const handleSubmit = async (values, { setSubmitting, resetForm, setStatus }) => {
     try {
-      const response = await fetch(API_URL, {
+      const res = await fetch(API_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(values),
       });
 
-      const data = await response.json();
+      const data = await res.json();
 
-      if (!response.ok) {
-        alert(data.message || "Error creating opportunity");
+      if (!res.ok) {
+        setStatus({ error: data.error || "Failed to create opportunity" });
       } else {
-        alert("Opportunity created successfully!");
+        setStatus({ success: "Opportunity created successfully!" });
         resetForm();
-        navigate("/opportunities"); // redirect to list
+        // Redirect to opportunities page after short delay
+        setTimeout(() => navigate("/opportunities"), 1500);
       }
     } catch (err) {
       console.error(err);
-      alert("Server error. Please try again.");
+      setStatus({ error: "Server error. Please try again." });
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-slate-50 px-4">
-      <div className="w-full max-w-lg bg-white p-8 rounded-xl shadow-md border border-slate-200">
-        <h2 className="text-2xl font-bold mb-4">Create Opportunity</h2>
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 p-4">
+      <div className="w-full max-w-lg bg-white dark:bg-slate-800 p-8 rounded-xl shadow-md border dark:border-slate-700">
+        <h2 className="text-2xl font-bold mb-4 dark:text-white">Create Opportunity</h2>
+
         <Formik
-          initialValues={initialValues}
+          initialValues={{
+            title: "",
+            description: "",
+            organization: "",
+            location: "",
+          }}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          {({ isSubmitting }) => (
+          {({ isSubmitting, status }) => (
             <Form className="space-y-4">
               <div>
                 <Field
                   name="title"
-                  placeholder="Title"
-                  className="w-full px-3 py-2 border rounded"
+                  placeholder="Opportunity Title"
+                  className="w-full px-3 py-2 border rounded dark:bg-slate-700 dark:text-white"
                 />
                 <ErrorMessage
                   name="title"
                   component="div"
-                  className="text-red-500 text-sm"
+                  className="text-red-500 text-sm mt-1"
                 />
               </div>
 
               <div>
                 <Field
-                  name="author"
-                  placeholder="Author"
-                  className="w-full px-3 py-2 border rounded"
-                />
-                <ErrorMessage
-                  name="author"
-                  component="div"
-                  className="text-red-500 text-sm"
-                />
-              </div>
-
-              <div>
-                <Field
+                  name="description"
                   as="textarea"
-                  name="content"
-                  placeholder="Content"
-                  className="w-full px-3 py-2 border rounded"
-                  rows="4"
+                  placeholder="Opportunity Description"
+                  rows={4}
+                  className="w-full px-3 py-2 border rounded dark:bg-slate-700 dark:text-white"
                 />
                 <ErrorMessage
-                  name="content"
+                  name="description"
                   component="div"
-                  className="text-red-500 text-sm"
+                  className="text-red-500 text-sm mt-1"
                 />
               </div>
 
               <div>
                 <Field
-                  name="preview"
-                  placeholder="Preview (max 50 chars)"
-                  className="w-full px-3 py-2 border rounded"
+                  name="organization"
+                  placeholder="Organization Name"
+                  className="w-full px-3 py-2 border rounded dark:bg-slate-700 dark:text-white"
                 />
                 <ErrorMessage
-                  name="preview"
+                  name="organization"
                   component="div"
-                  className="text-red-500 text-sm"
+                  className="text-red-500 text-sm mt-1"
                 />
               </div>
 
               <div>
                 <Field
-                  name="minutes_to_read"
-                  placeholder="Minutes to read"
-                  className="w-full px-3 py-2 border rounded"
+                  name="location"
+                  placeholder="Location"
+                  className="w-full px-3 py-2 border rounded dark:bg-slate-700 dark:text-white"
                 />
                 <ErrorMessage
-                  name="minutes_to_read"
+                  name="location"
                   component="div"
-                  className="text-red-500 text-sm"
+                  className="text-red-500 text-sm mt-1"
                 />
               </div>
+
+              {status?.error && (
+                <p className="text-red-500 text-sm">{status.error}</p>
+              )}
+              {status?.success && (
+                <p className="text-green-500 text-sm">{status.success}</p>
+              )}
 
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
               >
-                {isSubmitting ? "Creating..." : "Create Opportunity"}
+                {isSubmitting ? "Submitting..." : "Create Opportunity"}
               </button>
             </Form>
           )}
