@@ -1,5 +1,4 @@
 // src/App.jsx
-import PaymentDashboard from "./pages/PaymentDashboard";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -8,6 +7,8 @@ import Opportunities from "./pages/Opportunities";
 import Organization from "./pages/Organization";
 import VolunteerDashboard from "./pages/VolunteerDashboard";
 import CreateOpportunity from "./pages/CreateOpportunity";
+import PaymentDashboard from "./pages/PaymentDashboard";
+import ApplicationsDashboard from "./pages/ApplicationsDashboard"; // ✅ New
 import Nav from "./components/Nav";
 
 export default function App() {
@@ -35,6 +36,9 @@ export default function App() {
         {/* Volunteer Dashboard */}
         <Route path="/dashboard" element={<VolunteerDashboard />} />
 
+        {/* Applications */}
+        <Route path="/applications" element={<ApplicationsDashboard />} />
+
         {/* Payments */}
         <Route path="/payments" element={<PaymentDashboard />} />
 
@@ -51,4 +55,3 @@ export default function App() {
     </BrowserRouter>
   );
 }
-

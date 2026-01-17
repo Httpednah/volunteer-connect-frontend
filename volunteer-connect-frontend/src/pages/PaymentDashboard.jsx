@@ -1,4 +1,3 @@
-// src/pages/PaymentDashboard.jsx
 import React, { useEffect, useState } from "react";
 
 export default function PaymentDashboard() {
@@ -28,33 +27,44 @@ export default function PaymentDashboard() {
   if (error) return <p className="p-4 text-red-500">{error}</p>;
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Payment Dashboard</h2>
+    <div className="p-6">
+      <h2 className="text-3xl font-bold mb-6">Payment Dashboard</h2>
+
       {payments.length === 0 ? (
         <p>No payments found.</p>
       ) : (
-        <table className="w-full border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="border p-2 text-left">ID</th>
-              <th className="border p-2 text-left">Volunteer</th>
-              <th className="border p-2 text-left">Amount</th>
-              <th className="border p-2 text-left">Status</th>
-              <th className="border p-2 text-left">Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {payments.map((p) => (
-              <tr key={p.id}>
-                <td className="border p-2">{p.id}</td>
-                <td className="border p-2">{p.volunteer_name}</td>
-                <td className="border p-2">₦{p.amount}</td>
-                <td className="border p-2">{p.status}</td>
-                <td className="border p-2">{new Date(p.date).toLocaleDateString()}</td>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse border border-gray-300 shadow-sm">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="border p-3 text-left">ID</th>
+                <th className="border p-3 text-left">Volunteer</th>
+                <th className="border p-3 text-left">Opportunity</th>
+                <th className="border p-3 text-left">Amount</th>
+                <th className="border p-3 text-left">Status</th>
+                <th className="border p-3 text-left">Date</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {payments.map((p) => (
+                <tr key={p.id} className="hover:bg-gray-50">
+                  <td className="border p-2">{p.id}</td>
+                  <td className="border p-2">{p.volunteer_name}</td>
+                  <td className="border p-2">{p.application_title || "—"}</td>
+                  <td className="border p-2">₦{p.amount}</td>
+                  <td
+                    className={`border p-2 font-semibold ${
+                      p.status === "Paid" ? "text-green-600" : "text-yellow-600"
+                    }`}
+                  >
+                    {p.status}
+                  </td>
+                  <td className="border p-2">{new Date(p.date).toLocaleDateString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

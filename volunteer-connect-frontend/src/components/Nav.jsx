@@ -26,6 +26,9 @@ export default function Nav() {
       <NavLink to="/dashboard" style={linkStyle}>
         Dashboard
       </NavLink>
+      <NavLink to="/applications" style={linkStyle}>
+        Applications
+      </NavLink> {/* ✅ New */}
       <NavLink to="/payments" style={linkStyle}>
         Payments
       </NavLink>
