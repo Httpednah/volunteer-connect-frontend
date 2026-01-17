@@ -1,133 +1,142 @@
-import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { registerUser } from "../services/api";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 
-/**
- * Register Page: Allows new users to create an account.
- * Handles role selection, validation, and backend connection.
- */
-export default function Register() {
+const API_URL = "http://localhost:5555/opportunities"; // Update this to your Flask route
+
+export default function CreateOpportunity() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    password: "",
-    role: "volunteer",
+
+  // Validation schema using Yup
+  const validationSchema = Yup.object({
+    title: Yup.string()
+      .min(5, "Title must be at least 5 characters")
+      .required("Title is required"),
+    description: Yup.string()
+      .min(20, "Description must be at least 20 characters")
+      .required("Description is required"),
+    organization: Yup.string().required("Organization is required"),
+    location: Yup.string().required("Location is required"),
   });
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleRoleChange = (role) => {
-    setForm({ ...form, role });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setSuccess("");
-
+  // Handle form submission
+  const handleSubmit = async (values, { setSubmitting, resetForm, setStatus }) => {
     try {
-      const res = await registerUser(form);
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
 
-      if (res.error) {
-        setError(res.error);
+      const data = await res.json();
+
+      if (!res.ok) {
+        setStatus({ error: data.error || "Failed to create opportunity" });
       } else {
-        setSuccess("Registration successful! Redirecting to login...");
-        // Optionally, save user info or token if backend returns it
-        // localStorage.setItem("user", JSON.stringify(res));
-
-        // Redirect after a short delay
-        setTimeout(() => navigate("/login"), 1500);
+        setStatus({ success: "Opportunity created successfully!" });
+        resetForm();
+        // Redirect to opportunities page after short delay
+        setTimeout(() => navigate("/opportunities"), 1500);
       }
     } catch (err) {
       console.error(err);
-      setError("Registration failed. Please try again.");
+      setStatus({ error: "Server error. Please try again." });
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-slate-50 dark:bg-slate-900 px-4">
-      <div className="w-full max-w-md bg-white dark:bg-slate-800 p-8 rounded-xl shadow-md border border-slate-200 dark:border-slate-700">
-        <h2 className="text-2xl font-bold mb-4 dark:text-white">Create an account</h2>
-        <p className="mb-6 text-slate-600 dark:text-slate-300">
-          Enter your details to register.
-        </p>
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 p-4">
+      <div className="w-full max-w-lg bg-white dark:bg-slate-800 p-8 rounded-xl shadow-md border dark:border-slate-700">
+        <h2 className="text-2xl font-bold mb-4 dark:text-white">Create Opportunity</h2>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            name="name"
-            placeholder="Name"
-            value={form.name}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded dark:bg-slate-700 dark:text-white"
-            required
-          />
-          <input
-            name="email"
-            type="email"
-            placeholder="Email"
-            value={form.email}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded dark:bg-slate-700 dark:text-white"
-            required
-          />
-          <input
-            name="password"
-            type="password"
-            placeholder="Password"
-            value={form.password}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded dark:bg-slate-700 dark:text-white"
-            required
-          />
+        <Formik
+          initialValues={{
+            title: "",
+            description: "",
+            organization: "",
+            location: "",
+          }}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ isSubmitting, status }) => (
+            <Form className="space-y-4">
+              <div>
+                <Field
+                  name="title"
+                  placeholder="Opportunity Title"
+                  className="w-full px-3 py-2 border rounded dark:bg-slate-700 dark:text-white"
+                />
+                <ErrorMessage
+                  name="title"
+                  component="div"
+                  className="text-red-500 text-sm mt-1"
+                />
+              </div>
 
-          {/* Role selection */}
-          <div className="flex gap-4">
-            <button
-              type="button"
-              onClick={() => handleRoleChange("volunteer")}
-              className={`w-full px-4 py-2 rounded ${
-                form.role === "volunteer"
-                  ? "bg-blue-500 text-white"
-                  : "border bg-white dark:bg-slate-700 dark:text-white"
-              }`}
-            >
-              Volunteer
-            </button>
-            <button
-              type="button"
-              onClick={() => handleRoleChange("organization")}
-              className={`w-full px-4 py-2 rounded ${
-                form.role === "organization"
-                  ? "bg-blue-500 text-white"
-                  : "border bg-white dark:bg-slate-700 dark:text-white"
-              }`}
-            >
-              Organization
-            </button>
-          </div>
+              <div>
+                <Field
+                  name="description"
+                  as="textarea"
+                  placeholder="Opportunity Description"
+                  rows={4}
+                  className="w-full px-3 py-2 border rounded dark:bg-slate-700 dark:text-white"
+                />
+                <ErrorMessage
+                  name="description"
+                  component="div"
+                  className="text-red-500 text-sm mt-1"
+                />
+              </div>
 
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-          {success && <p className="text-green-500 text-sm">{success}</p>}
+              <div>
+                <Field
+                  name="organization"
+                  placeholder="Organization Name"
+                  className="w-full px-3 py-2 border rounded dark:bg-slate-700 dark:text-white"
+                />
+                <ErrorMessage
+                  name="organization"
+                  component="div"
+                  className="text-red-500 text-sm mt-1"
+                />
+              </div>
 
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          >
-            Register
-          </button>
-        </form>
+              <div>
+                <Field
+                  name="location"
+                  placeholder="Location"
+                  className="w-full px-3 py-2 border rounded dark:bg-slate-700 dark:text-white"
+                />
+                <ErrorMessage
+                  name="location"
+                  component="div"
+                  className="text-red-500 text-sm mt-1"
+                />
+              </div>
 
-        <p className="text-sm text-slate-600 dark:text-slate-300 mt-4 text-center">
-          Already have an account?{" "}
-          <Link to="/login" className="text-blue-500 hover:underline">
-            Login
-          </Link>
-        </p>
+              {status?.error && (
+                <p className="text-red-500 text-sm">{status.error}</p>
+              )}
+              {status?.success && (
+                <p className="text-green-500 text-sm">{status.success}</p>
+              )}
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+              >
+                {isSubmitting ? "Submitting..." : "Create Opportunity"}
+              </button>
+            </Form>
+          )}
+        </Formik>
       </div>
     </div>
   );
