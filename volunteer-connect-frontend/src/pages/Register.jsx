@@ -4,7 +4,7 @@ import { registerUser } from "../services/api";
 
 /**
  * Register Page: Allows new users to create an account.
- * Demonstrates: Role selection and multi-field form state.
+ * Handles role selection, validation, and backend connection.
  */
 export default function Register() {
   const navigate = useNavigate();
@@ -15,6 +15,7 @@ export default function Register() {
     role: "volunteer",
   });
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -27,15 +28,23 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setSuccess("");
+
     try {
       const res = await registerUser(form);
+
       if (res.error) {
         setError(res.error);
       } else {
-        // Success: navigate to login
-        navigate("/login");
+        setSuccess("Registration successful! Redirecting to login...");
+        // Optionally, save user info or token if backend returns it
+        // localStorage.setItem("user", JSON.stringify(res));
+
+        // Redirect after a short delay
+        setTimeout(() => navigate("/login"), 1500);
       }
-    } catch {
+    } catch (err) {
+      console.error(err);
       setError("Registration failed. Please try again.");
     }
   };
@@ -49,38 +58,32 @@ export default function Register() {
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <input
-              name="name"
-              placeholder="Name"
-              value={form.name}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded dark:bg-slate-700 dark:text-white"
-              required
-            />
-          </div>
-          <div>
-            <input
-              name="email"
-              type="email"
-              placeholder="Email"
-              value={form.email}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded dark:bg-slate-700 dark:text-white"
-              required
-            />
-          </div>
-          <div>
-            <input
-              name="password"
-              type="password"
-              placeholder="Password"
-              value={form.password}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded dark:bg-slate-700 dark:text-white"
-              required
-            />
-          </div>
+          <input
+            name="name"
+            placeholder="Name"
+            value={form.name}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded dark:bg-slate-700 dark:text-white"
+            required
+          />
+          <input
+            name="email"
+            type="email"
+            placeholder="Email"
+            value={form.email}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded dark:bg-slate-700 dark:text-white"
+            required
+          />
+          <input
+            name="password"
+            type="password"
+            placeholder="Password"
+            value={form.password}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded dark:bg-slate-700 dark:text-white"
+            required
+          />
 
           {/* Role selection */}
           <div className="flex gap-4">
@@ -109,6 +112,7 @@ export default function Register() {
           </div>
 
           {error && <p className="text-red-500 text-sm">{error}</p>}
+          {success && <p className="text-green-500 text-sm">{success}</p>}
 
           <button
             type="submit"
