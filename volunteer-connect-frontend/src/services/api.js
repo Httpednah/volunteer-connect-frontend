@@ -1,8 +1,6 @@
-// src/services/api.js
-
 const BASE_URL = "http://127.0.0.1:5000";
 
-// --------- AUTH ----------
+// ---------- AUTH ----------
 export async function registerUser(data) {
   const res = await fetch(`${BASE_URL}/register`, {
     method: "POST",
@@ -21,7 +19,7 @@ export async function loginUser(data) {
   return res.json();
 }
 
-// --------- OPPORTUNITIES ----------
+// ---------- OPPORTUNITIES ----------
 export async function getOpportunities() {
   const res = await fetch(`${BASE_URL}/opportunities`);
   return res.json();
@@ -35,4 +33,3 @@ export async function createOpportunity(data) {
   });
   return res.json();
 }
-
