@@ -17,6 +17,9 @@ export default function Nav() {
       <NavLink to="/opportunities" style={linkStyle}>
         Opportunities
       </NavLink>
+      <NavLink to="/articles" style={linkStyle}>
+        Articles
+      </NavLink>
       <NavLink to="/create-opportunity" style={linkStyle}>
         Create Opportunity
       </NavLink>

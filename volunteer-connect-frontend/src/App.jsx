@@ -8,6 +8,9 @@ import Opportunities from "./pages/Opportunities";
 import Organization from "./pages/Organization";
 import VolunteerDashboard from "./pages/VolunteerDashboard";
 import CreateOpportunity from "./pages/CreateOpportunity";
+import Articles from "./pages/Articles";
+import ArticleDetail from "./pages/ArticleDetail";
+import CreateArticle from "./pages/CreateArticle";
 import Nav from "./components/Nav";
 
 export default function App() {
@@ -38,6 +41,11 @@ export default function App() {
         {/* Payments */}
         <Route path="/payments" element={<PaymentDashboard />} />
 
+        {/* Articles */}
+        <Route path="/articles" element={<Articles />} />
+        <Route path="/articles/:id" element={<ArticleDetail />} />
+        <Route path="/create-article" element={<CreateArticle />} />
+
         {/* Optional: Add a 404 fallback route */}
         <Route
           path="*"
@@ -51,4 +59,3 @@ export default function App() {
     </BrowserRouter>
   );
 }
-
